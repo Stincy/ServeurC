@@ -1,13 +1,49 @@
 #include <stdio.h>
-#include <string.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netinet/ip.h>
+#include "socket.h"
 
-int main (int argc, char **argv)
-{
-	/* Arnold Robbins in the LJ of February ’95 , describing RCS */
-	if ( argc>1 && strcmp( argv[1] , " -advice " ) == 0) {
-	printf ( " Don ’t Panic !\n " );
-	return 42;
+
+int creer_serveur(int port){
+
+	int socket_serveur ;
+	int socket_client ;
+	struct sockaddr_in saddr ;
+
+
+	const char * message = " Notre super serveur marche \n " ;
+
+
+	socket_serveur = socket( AF_INET , SOCK_STREAM , 0);
+	if ( socket_serveur == -1)
+	{
+	perror ( " socket_serveur " );
 	}
-	printf ( " Need an advice ?\n " );
-	return 0;
+
+	addr.sin_family = AF_INET ;   		/* Socket ipv4 */
+	saddr.sin_port = htons (port); 		/* Port d ’ écoute */
+	saddr.sin_addr.s_addr = INADDR_ANY ;
+
+	if(bind(socket_serveur, (struct sockaddr *) &saddr,sizeof(saddr))==-1){
+		perror ( " bind socker_serveur " );
+	}
+
+	if (listen(socket_serveur, 10) == -1){
+		perror("listen socket_serveur");
+	/*traitement d'erreur*/
+	}
+
+	/* socket client */
+	socket_client = accept(socket_serveur, NULL, NULL));
+	if (socket_client == -1)
+	{
+		perror("accept");	
+		/* traitement d'erreur*/
+	}
+	/* On peut maintenant dialoguer avec le client */
+	const char *message_bienvenue = "Bonjour, bienvenue sur notre serveur\n";
+	write(socket_client, message_bienvenue, strlen(message_bienvenue));
+
 }
+	  
