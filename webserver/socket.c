@@ -10,10 +10,10 @@ int creerServeur(){
 	struct sockaddr_in saddr ;
 
 
-	const char * message = " Notre super serveur marche \n " ;
+	const char * message = " Notre super serveur marche !!!\n " ;
 
 
-	socket_serveur = socket( AF_INET , SOCK_STREAM , 0);
+	socket_serveur = socket( AF_INET , SOCK_STREAM , 0); // descripteur
 	if ( socket_serveur == -1)
 	{
 	perror ( " socket_serveur " );
