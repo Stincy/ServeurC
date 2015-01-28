@@ -2,10 +2,10 @@
 #include <stdlib.h>
 #include "socket.c"
 
-int main ( int argc, char **argv){
+int main (){
 
 	creer_serveur(8000);
 	printf("main ok"); 
 
-return 0;
+	return 0;
 }
