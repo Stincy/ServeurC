@@ -1,9 +1,11 @@
-//#include <stdio.h>
+#include <stdio.h>
 #include <fcntl.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netinet/ip.h>
+#include <unistd.h>
 #include "socket.h"
 #include <unistd.h>
 
@@ -14,10 +16,6 @@ int creer_serveur(int port){
 	int socket_client;
 	struct sockaddr_in saddr;
 	const char *message_bienvenue = "Bonjour, bienvenue sur notre serveur\n";
-
-
-	/*const char * message = " Notre super serveur marche \n ";*/
-
 
 	socket_serveur = socket( AF_INET , SOCK_STREAM , 0);
 	if ( socket_serveur == -1)

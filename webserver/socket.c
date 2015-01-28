@@ -1,11 +1,12 @@
 #include <stdio.h>
 #include <fcntl.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include <netinet/ip.h>
-#include "socket.h"
 #include <unistd.h>
+#include "socket.h"
+
 
 
 int creer_serveur(int port){
@@ -15,10 +16,6 @@ int creer_serveur(int port){
 	struct sockaddr_in saddr;
 	const char *message_bienvenue = "Bonjour, bienvenue sur notre serveur\n";
 
-
-	/*const char * message = " Notre super serveur marche \n ";*/
-
-
 	socket_serveur = socket( AF_INET , SOCK_STREAM , 0);
 	if ( socket_serveur == -1)
 	{
@@ -26,7 +23,7 @@ int creer_serveur(int port){
 	}
 
 	saddr.sin_family = AF_INET ;   			/* Socket ipv4 */
-	saddr.sin_port = htons (port); 			/* Port d ’ écoute */
+	saddr.sin_port = htons(port); 			/* Port d ’ écoute */
 	saddr.sin_addr.s_addr = INADDR_ANY;
 
 	if(bind(socket_serveur, (struct sockaddr *) &saddr,sizeof(saddr))==-1){
