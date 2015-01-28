@@ -12,9 +12,9 @@ int main(int argc , char **argv){
 	return 42;
 	}
 
-
-	creer_serveur(8000);
-
-	printf ( " Need an advice ? \n " );
+	while(1){
+		creer_serveur(8000);
+		initialiser_signaux();
+	}
 	return 0;
 }
