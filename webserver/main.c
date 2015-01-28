@@ -4,8 +4,10 @@
 
 int main (){
 
-	creer_serveur(8000);
-	printf("main ok"); 
+	while(1){
+		creer_serveur(8000);
+		printf("main ok"); 
+	}
 
 	return 0;
 }
