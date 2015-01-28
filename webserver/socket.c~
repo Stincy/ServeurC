@@ -2,15 +2,18 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netinet/ip.h>
+#include "socket.h"
 
 
-int creerServeur(){
+int creer_serveur(int port){
 
-	int socket_serveur ;
-	struct sockaddr_in saddr ;
+	int socket_serveur;
+	int socket_client;
+	struct sockaddr_in saddr;
+	const char *message_bienvenue = "Bonjour, bienvenue sur notre serveur\n";
 
 
-	const char * message = " Notre super serveur marche \n " ;
+	/*const char * message = " Notre super serveur marche \n ";*/
 
 
 	socket_serveur = socket( AF_INET , SOCK_STREAM , 0);
@@ -19,25 +22,27 @@ int creerServeur(){
 	perror ( " socket_serveur " );
 	}
 
-	addr.sin_family = AF_INET ;   		/* Socket ipv4 */
-	saddr.sin_port = htons (8000); 		/* Port d ’ écoute */
-	saddr.sin_addr.s_addr = INADDR_ANY ;
+	saddr.sin_family = AF_INET ;   			/* Socket ipv4 */
+	saddr.sin_port = htons (port); 			/* Port d ’ écoute */
+	saddr.sin_addr.s_addr = INADDR_ANY;
 
 	if(bind(socket_serveur, (struct sockaddr *) &saddr,sizeof(saddr))==-1){
 		perror ( " bind socker_serveur " );
 	}
 
-	if (listen(socket_serveur, 10) == -1){
+	if (listen(socket_serveur, 10) == -1){ 		/*traitement d'erreur*/
 		perror("listen socket_serveur");
-	/*traitement d'erreur*/
 	}
 
+	/* socket client */
+	socket_client = accept(socket_serveur, NULL, NULL);
+	if (socket_client == -1)			/* traitement d'erreur*/
+	{
+		perror("accept");	
+	}
+	/* On peut maintenant dialoguer avec le client */
 	
-
-
-	/* traitement de l ’ erreur */
+	write(socket_client, message_bienvenue, strlen(message_bienvenue));
 
 }
-	/* Utilisation de la socket serveur */
-
-}
+	  
