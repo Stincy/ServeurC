@@ -5,7 +5,7 @@
 int main ( int argc, char **argv){
 
 	creer_serveur(8000);
-	printf("main ok"); 
+	print(" main ok"); 
 
 return 0;
 }
