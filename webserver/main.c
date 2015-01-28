@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "socket.c"
+#include "socket.h"
 
 int main (){
 
