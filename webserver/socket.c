@@ -57,10 +57,10 @@ int creer_serveur(int port){
 }
 
 void initialiser_signaux(void){
-	/*if ( signal( SIGPIPE , SIG_IGN ) == SIG_ERR ){
+	if ( signal( SIGPIPE , SIG_IGN ) == SIG_ERR ){
 		perror("accept");
-	}*/
-
+	}
+	
 	struct sigaction sa ;
 	sa.sa_handler = traitement_signal;
 	sigemptyset (&sa.sa_mask );

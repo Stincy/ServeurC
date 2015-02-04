@@ -13,8 +13,8 @@ int main(int argc , char **argv){
 	}
 
 	while(1){
-		initialiser_signaux();
 		creer_serveur(8000);
+		initialiser_signaux();
 	}
 	return 0;
 }
