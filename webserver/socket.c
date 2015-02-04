@@ -9,13 +9,11 @@
 #include "socket.h"
 
 
-
 int creer_serveur(int port){
-
+	
 	int socket_serveur;
-	int socket_client;
 	struct sockaddr_in saddr;
-	const char *message_bienvenue = "Bonjour, bienvenue sur notre serveur\n";
+
 
 	socket_serveur = socket( AF_INET , SOCK_STREAM , 0);
 	if ( socket_serveur == -1)
@@ -42,17 +40,41 @@ int creer_serveur(int port){
 		perror("listen socket_serveur");
 	}
 
-	/* socket client */
-	socket_client = accept(socket_serveur, NULL, NULL);
-	if (socket_client == -1)			/* traitement d'erreur*/
-	{
-		perror("accept");	
+	return socket_serveur;
+
+}
+
+
+
+void connectionClient(int socket_serveur){
+
+	int nbClient = 1;
+	int socket_client = accept(socket_serveur, NULL, NULL);	
+	const char *message_bienvenue = "Bonjour, bienvenue sur notre serveur\n";
+
+	if (socket_client == -1){
+		perror("accept");
+	}else{
+		
+		nbClient++;
+		int pid = fork();
+		
+		if (pid == 0){
+			printf("%s \n" ,message_bienvenue );
+			FILE *fclient = fdopen(socket_client, "w+");
+			fgetc(fclient);
+			fprintf(fclient, "Bravo vous etes le %d client \n", nbClient );
+			//fils
+			//methode de recurrence 	
+		}
+			//pere
+
 	}
+	
 	/* On peut maintenant dialoguer avec le client */
 	
 	write(socket_client, message_bienvenue, strlen(message_bienvenue));
 
-	return 0;
 
 }
 
@@ -60,7 +82,7 @@ void initialiser_signaux(void){
 	if ( signal( SIGPIPE , SIG_IGN ) == SIG_ERR ){
 		perror("accept");
 	}
-	
+
 	struct sigaction sa ;
 	sa.sa_handler = traitement_signal;
 	sigemptyset (&sa.sa_mask );

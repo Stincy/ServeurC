@@ -11,10 +11,14 @@ int main(int argc , char **argv){
 		printf("don't panic \n");
 	return 42;
 	}
+	int socket_serveur;
+	socket_serveur = creer_serveur(8000);
+
 
 	while(1){
-		creer_serveur(8000);
+
 		initialiser_signaux();
+		connectionClient(socket_serveur);
 	}
 	return 0;
 }
