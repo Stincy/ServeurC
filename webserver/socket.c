@@ -43,11 +43,24 @@ int creer_serveur(int port){
 	}
 
 	/* socket client */
-	socket_client = accept(socket_serveur, NULL, NULL);
-	if (socket_client == -1)			/* traitement d'erreur*/
-	{
-		perror("accept");	
+	
+	socket_client = accept(socket_serveur, NULL, NULL);	
+
+	if (socket_client == -1){
+		perror("accept");
+	}else{
+
+		int pid = fork();
+
+		if (pid == 0){
+			printf("%s \n" ,message_bienvenue );
+			//fils
+			//methode de recurrence 	
+		}
+			//pere
+
 	}
+	
 	/* On peut maintenant dialoguer avec le client */
 	
 	write(socket_client, message_bienvenue, strlen(message_bienvenue));
