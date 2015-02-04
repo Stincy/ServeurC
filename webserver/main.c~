@@ -12,9 +12,12 @@ int main(int argc , char **argv){
 	return 42;
 	}
 
+	creer_serveur(8000);
+
+
 	while(1){
 		initialiser_signaux();
-		creer_serveur(8000);
+		connectionClient();
 	}
 	return 0;
 }
