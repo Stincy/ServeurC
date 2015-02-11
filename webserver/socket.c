@@ -47,7 +47,10 @@ int creer_serveur(int port){
 
 
 void connectionClient(int socket_serveur){
+	
 
+	#define SIZE_BUFF 2048
+	char buff[SIZE_BUFF];
 	int nbClient = 1;
 	int socket_client = accept(socket_serveur, NULL, NULL);	
 	const char *message_bienvenue = "Bonjour, bienvenue sur notre serveur\n";
@@ -64,8 +67,13 @@ void connectionClient(int socket_serveur){
 			FILE *fclient = fdopen(socket_client, "w+");
 			fgetc(fclient);
 			fprintf(fclient, "Bravo vous etes le %d client \n", nbClient );
-			//fils
-			//methode de recurrence 	
+			while(fgets(buff , SIZE_BUFF, fclient)!=NULL){
+	
+				if(fprintf(fclient,"<Bowser>%s",buff) == -1){
+					perror("probleme de write");
+				}
+			}
+		
 		}
 			//pere
 
