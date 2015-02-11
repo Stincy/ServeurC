@@ -59,21 +59,20 @@ void connectionClient(int socket_serveur){
 		perror("accept");
 	}else{
 		
-		nbClient++;
 		int pid = fork();
 		
 		if (pid == 0){
 			printf("%s \n" ,message_bienvenue );
 			FILE *fclient = fdopen(socket_client, "w+");
 			fgetc(fclient);
-			fprintf(fclient, "Bravo vous etes le %d client \n", nbClient );
 			while(fgets(buff , SIZE_BUFF, fclient)!=NULL){
-	
-				if(fprintf(fclient,"<Bowser>%s",buff) == -1){
-			perror("probleme de write");
-		}
-	}
-		
+				
+				fprintf(fclient, "Bravo vous etes le %d client \n", nbClient );
+				nbClient += 1;
+				decoupageGET(buff);
+				
+			}
+		 	return 0;
 		}
 			//pere
 
@@ -83,6 +82,24 @@ void connectionClient(int socket_serveur){
 	
 	write(socket_client, message_bienvenue, strlen(message_bienvenue));
 
+
+}
+
+void decoupageGET(char * str){
+	const char s[2] = " ";
+	char *token;
+	//int nbMot = 0;
+
+	/* get the first token */
+	token = strtok(str, s);
+	printf("TOKEN : %s\n", token);
+
+	if(strcmp(token,"GET") == 0){
+		while( token != NULL ){
+			token = strtok(NULL, s);
+			printf("TOKEN : %s\n", token);
+		}	
+	}
 
 }
 
