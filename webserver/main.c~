@@ -16,13 +16,9 @@ int main(int argc , char **argv){
 
 
 	while(1){
-<<<<<<< HEAD
-		creer_serveur(8000);
-		initialiser_signaux();
-=======
+
 		initialiser_signaux();
 		connectionClient(socket_serveur);
->>>>>>> 9d48265ed1281ea018730fe1f5643de36cf4d1a5
 	}
 	return 0;
 }

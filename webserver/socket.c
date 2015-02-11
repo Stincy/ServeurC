@@ -64,15 +64,13 @@ void connectionClient(int socket_serveur){
 		if (pid == 0){
 			printf("%s \n" ,message_bienvenue );
 			FILE *fclient = fdopen(socket_client, "w+");
-			fgetc(fclient);
 			while(fgets(buff , SIZE_BUFF, fclient)!=NULL){
-				
 				fprintf(fclient, "Bravo vous etes le %d client \n", nbClient );
 				nbClient += 1;
 				decoupageGET(buff);
-				
 			}
-		 	return 0;
+			fclose(fclient) ;
+		 	exit(0);
 		}
 			//pere
 
@@ -89,6 +87,8 @@ void decoupageGET(char * str){
 	const char s[2] = " ";
 	char *token;
 	//int nbMot = 0;
+
+	printf("%s\n", str);
 
 	/* get the first token */
 	token = strtok(str, s);
