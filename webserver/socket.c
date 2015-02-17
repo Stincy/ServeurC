@@ -84,6 +84,9 @@ void connectionClient(int socket_serveur){
 }
 
 void decoupageGET(char * str){
+
+	#define size_t = 7	
+
 	const char s[2] = " ";
 	char *token;
 	//int nbMot = 0;
@@ -94,11 +97,17 @@ void decoupageGET(char * str){
 	token = strtok(str, s);
 	printf("TOKEN1 : %s\n", token);
 
-	if(strcmp(token,"GET") == 0){
+	if(strcmp(token,"GET") == 0 && strlen(token)==3){
 		while( token != NULL ){
 			token = strtok(NULL, s);
 			printf("TOKEN : %s\n", token);
-		}	
+		}
+	}
+
+	if (strncmp(token[2], "HTTP/1.", size_t) == 0){
+		if (strrchr(token[2], '0') == 0 || strrchr(token[2], '1') == 0){
+			printf("ouai ouai ouai \n");
+		}
 	}
 
 }
