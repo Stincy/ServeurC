@@ -62,13 +62,17 @@ void connectionClient(int socket_serveur){
 		int pid = fork();
 		
 		if (pid == 0){
-			printf("%s \n" ,message_bienvenue );
 			FILE *fclient = fdopen(socket_client, "w+");
+			fflush(fclient);
 			while(fgets(buff , SIZE_BUFF, fclient)!=NULL){
 				fprintf(fclient, "Bravo vous etes le %d client \n", nbClient );
 				nbClient += 1;
-				decoupageGET(buff);
+				printf("%d\n", decoupageGET(buff));
 			}
+			if (decoupageGET(buff) == 1) {
+				write(socket_client, message_bienvenue, strlen(message_bienvenue));
+			}
+			fflush(fclient);
 			fclose(fclient) ;
 		 	exit(0);
 		}
@@ -78,18 +82,17 @@ void connectionClient(int socket_serveur){
 	
 	/* On peut maintenant dialoguer avec le client */
 	
-	write(socket_client, message_bienvenue, strlen(message_bienvenue));
+	//write(socket_client, message_bienvenue, strlen(message_bienvenue));
 
 
 }
 
-void decoupageGET(char * str){
+int decoupageGET(char * str){
 
 	#define size_t = 7	
 
 	const char s[2] = " ";
 	char *token;
-	//int nbMot = 0;
 
 	printf("%s\n", str);
 
@@ -97,26 +100,22 @@ void decoupageGET(char * str){
 	token = strtok(str, s);
 	printf("TOKEN1 : %s\n", token);
 
-	/*if (strncmp(token[2], "HTTP/1.", 7) == 0){
-		if (strrchr(token[2], '0') == 0 || strrchr(token[2], '1') == 0){
-			printf("ouai ouai ouai \n");
-		}
-	}*/
-
-
 	if(strcmp(token,"GET") == 0 && strlen(token)==3){
+		if (strstr(token, "\r\n") != NULL || strstr(token, "\n") != NULL){
+			printf("ligne non vide \n");
+			if (strstr(token, "1.0") != NULL || strstr(token, "1.1") != NULL){
+				printf("terminaison bonne \n");
+				return 1;
+			}
+		}
+
 		while( token != NULL ){
 			token = strtok(NULL, s);
 			printf("TOKEN : %s\n", token);
 		}
+		
 	}
-
-	if (strncmp(token[2], "HTTP/1.", size_t) == 0){
-		if (strrchr(token[2], '0') == 0 || strrchr(token[2], '1') == 0){
-			printf("ouai ouai ouai \n");
-		}
-	}
-
+	return 0;
 }
 
 void initialiser_signaux(void){
