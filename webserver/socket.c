@@ -8,6 +8,7 @@
 #include <signal.h>
 #include "socket.h"
 
+int nbClient = 0;
 
 int creer_serveur(int port){
 	
@@ -51,32 +52,44 @@ void connectionClient(int socket_serveur){
 
 	#define SIZE_BUFF 2048
 	char buff[SIZE_BUFF];
-	int nbClient = 1;
 	int socket_client = accept(socket_serveur, NULL, NULL);	
-	const char *message_bienvenue = "Bonjour, bienvenue sur notre serveur\n";
+	//const char *message_bienvenue = "Bonjour, bienvenue sur notre serveur\n";
+	char *erreur;
+	nbClient += 1;
+	printf("Bravo vous etes le %d client \n", nbClient );
 
 	if (socket_client == -1){
 		perror("accept");
 	}else{
 		
-		int pid = fork();
-		
-		if (pid == 0){
+		//int pid = fork();
+		//if (pid == 0){
 			FILE *fclient = fdopen(socket_client, "w+");
-			fflush(fclient);
+	//		fflush(fclient);
 			while(fgets(buff , SIZE_BUFF, fclient)!=NULL){
-				fprintf(fclient, "Bravo vous etes le %d client \n", nbClient );
-				nbClient += 1;
-				printf("%d\n", decoupageGET(buff));
-			}
-			if (decoupageGET(buff) == 1) {
-				write(socket_client, message_bienvenue, strlen(message_bienvenue));
+				if (buff[0] == '\0') {
+					printf("ligne vide\n");				
+				} else {
+					printf("ligne non vide: %s\n,", buff);		
+					printf("code d'erreur du decoupage: %d\n", decoupageGET(buff));
+					if (decoupageGET(buff) == 0) {
+						printf(" on passe\n ");
+						erreur = "HTTP/1.1 400 Bad request\nConnection: close\nContent-length: 17\n";
+						// write(socket_client, erreur, strlen(erreur));
+						int x = fprintf(fclient, "%d%s\r\n", (int)strlen(erreur), erreur);
+						printf("%d  %d\r\n%s", x, (int)strlen(erreur), erreur);
+						//traitement
+					}
+				}
 			}
 			fflush(fclient);
 			fclose(fclient) ;
-		 	exit(0);
-		}
+			printf("fin du client %d\n", nbClient);
+		 	/*exit(0);
+		} else {
 			//pere
+			
+		}*/
 
 	}
 	
@@ -100,7 +113,7 @@ int decoupageGET(char * str){
 	token = strtok(str, s);
 	printf("TOKEN1 : %s\n", token);
 
-	if(strcmp(token,"GET") == 0 && strlen(token)==3){
+	if(strcmp(token,"GET") == 0 /*&& strlen(token)==3*/){
 		return 1;
 		if (strstr(token, "\r\n") != NULL || strstr(token, "\n") != NULL){
 			printf("ligne non vide \n");
@@ -110,10 +123,10 @@ int decoupageGET(char * str){
 			}
 		}
 
-		while( token != NULL ){
+		/*while( token != NULL ){
 			token = strtok(NULL, s);
 			printf("TOKEN : %s\n", token);
-		}
+		}*/
 		
 	}
 	return 0;

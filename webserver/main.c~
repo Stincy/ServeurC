@@ -12,7 +12,7 @@ int main(int argc , char **argv){
 	return 42;
 	}
 	int socket_serveur;
-	socket_serveur = creer_serveur(8000);
+	socket_serveur = creer_serveur(8080);
 
 
 	while(1){

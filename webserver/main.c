@@ -13,11 +13,11 @@ int main(int argc , char **argv){
 	}
 	int socket_serveur;
 	socket_serveur = creer_serveur(8080);
+	initialiser_signaux();
 
 
 	while(1){
 
-		initialiser_signaux();
 		connectionClient(socket_serveur);
 	}
 	return 0;
