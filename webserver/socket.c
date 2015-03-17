@@ -53,7 +53,7 @@ void connectionClient(int socket_serveur){
 	#define SIZE_BUFF 2048
 	char buff[SIZE_BUFF];
 	int socket_client = accept(socket_serveur, NULL, NULL);	
-	//const char *message_bienvenue = "Bonjour, bienvenue sur notre serveur\n";
+	const char *message_bienvenue = "Bonjour, bienvenue sur notre serveur\n";
 	char *erreur;
 	nbClient += 1;
 	printf("Bravo vous etes le %d client \n", nbClient );
@@ -73,12 +73,14 @@ void connectionClient(int socket_serveur){
 					printf("ligne non vide: %s\n,", buff);		
 					printf("code d'erreur du decoupage: %d\n", decoupageGET(buff));
 					if (decoupageGET(buff) == 0) {
-						printf(" on passe\n ");
 						erreur = "HTTP/1.1 400 Bad request\nConnection: close\nContent-length: 17\n";
-						// write(socket_client, erreur, strlen(erreur));
+						write(socket_client, erreur, strlen(erreur));
 						int x = fprintf(fclient, "%d%s\r\n", (int)strlen(erreur), erreur);
 						printf("%d  %d\r\n%s", x, (int)strlen(erreur), erreur);
 						//traitement
+					} else if (decoupageGET(buff) == 3) {
+						printf("Bravo vous etes le %d client \n", nbClient );
+						write(socket_client, message_bienvenue, strlen(message_bienvenue));
 					}
 				}
 			}
@@ -104,33 +106,58 @@ int decoupageGET(char * str){
 
 	#define size_t = 7	
 
-	const char s[2] = " ";
-	char *token;
+	//const char s[2] = " ";
 
+	char *token;
+	char *substr;
+	char *tr = malloc(strlen(str)); 
+	
+	strcpy(tr, str);
 	printf("%s\n", str);
 
 	/* get the first token */
-	token = strtok(str, s);
+	token = strtok(str, " ");
 	printf("TOKEN1 : %s\n", token);
 
-	if(strcmp(token,"GET") == 0 /*&& strlen(token)==3*/){
-		return 1;
-		if (strstr(token, "\r\n") != NULL || strstr(token, "\n") != NULL){
-			printf("ligne non vide \n");
-			if (strstr(token, "1.0") != NULL || strstr(token, "1.1") != NULL){
-				printf("terminaison bonne \n");
+	if(strcmp(token,"GET") == 0 ){
+			substr = strstr(tr, "\r\n");
+			if (substr != NULL) {
+				substr = strstr(tr, "1.1");
+				if (substr != NULL ){
+					printf("terminaison bonne \n");
+					return 3;
+				}
+				substr = strstr(tr, "1.0");
+				if (substr != NULL) {
+					printf("terminaison bonne \n");
+					return 3;
+				}
 				return 2;
 			}
-		}
-
-		/*while( token != NULL ){
-			token = strtok(NULL, s);
-			printf("TOKEN : %s\n", token);
-		}*/
-		
+		return 1;
 	}
 	return 0;
 }
+
+/*enum http_method {
+	HTTP_GET ,
+	HTTP_UNSUPPORTED ,
+};
+
+typedef struct {
+	enum http_method method ;
+	int major_version ;
+	int minor_version ;
+	char * url ;
+} http_request ;
+
+char * fgets_or_exit( char *buffer, int size, FILE *stream ){
+
+}
+
+int parse_http_request(const char *request_line, http_request *request){
+	return 0;
+}*/
 
 void initialiser_signaux(void){
 	if ( signal( SIGPIPE , SIG_IGN ) == SIG_ERR ){
