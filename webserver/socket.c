@@ -9,6 +9,7 @@
 #include "socket.h"
 
 int nbClient = 0;
+int status ;
 
 int creer_serveur(int port){
 	
@@ -70,16 +71,17 @@ void connectionClient(int socket_serveur){
 				if (buff[0] == '\0') {
 					printf("ligne vide\n");				
 				} else {
-					printf("ligne non vide: %s\n,", buff);		
-					printf("code d'erreur du decoupage: %d\n", decoupageGET(buff));
-					if (decoupageGET(buff) == 0) {
+					printf("ligne non vide: %s\n,", buff);	
+					status = decoupageGET(buff);
+					printf("code d'erreur du decoupage: %d\n", status);
+					if (status == 0) {
 						erreur = "HTTP/1.1 400 Bad request\nConnection: close\nContent-length: 17\n";
 						write(socket_client, erreur, strlen(erreur));
 						int x = fprintf(fclient, "%d%s\r\n", (int)strlen(erreur), erreur);
 						printf("%d  %d\r\n%s", x, (int)strlen(erreur), erreur);
 						//traitement
-					} else if (decoupageGET(buff) == 3) {
-						printf("Bravo vous etes le %d client \n", nbClient );
+					} else if (status == 3) {
+						erreur ="HTTP/1.1 200 OK\nContent-length: ";
 						write(socket_client, message_bienvenue, strlen(message_bienvenue));
 					}
 				}
@@ -125,17 +127,22 @@ int decoupageGET(char * str){
 				substr = strstr(tr, "1.1");
 				if (substr != NULL ){
 					printf("terminaison bonne \n");
+					free(tr);
 					return 3;
 				}
 				substr = strstr(tr, "1.0");
 				if (substr != NULL) {
 					printf("terminaison bonne \n");
+					free(tr);
 					return 3;
 				}
+				free(tr);
 				return 2;
 			}
+		free(tr);
 		return 1;
 	}
+	free(tr);
 	return 0;
 }
 
